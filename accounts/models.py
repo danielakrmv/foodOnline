@@ -64,11 +64,11 @@ class UserManager(BaseUserManager):
 
 # with the Abstract Base User we have full control of editing the whole custom user model, including the authentication functionality
 class User(AbstractBaseUser):
-    RESTAURANT = 1
+    VENDOR = 1
     CUSTOMER = 2
 
     ROLE_CHOICE = (
-        (RESTAURANT, 'Restaurant'),
+        (VENDOR, 'Vendor'),
         (CUSTOMER, 'Customer'),
     )
 
