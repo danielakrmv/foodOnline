@@ -142,3 +142,13 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# Email configuration
+# for gmail smtp.gmail.com ; for abv is smtp.abv.bg
+# for gmail is 587, for abv is 465
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = 'nfmu lxda rxit twjx'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <djangofoodonline43@gmail.com>'
