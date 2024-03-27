@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'accounts.context_processors.get_vendor',
+                'accounts.context_processors.get_google_api',
             ],
         },
     },
@@ -150,6 +151,8 @@ MESSAGE_TAGS = {
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = 'nfmu lxda rxit twjx'
+EMAIL_HOST_PASSWORD = 'epog twdb objl hahv'
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <djangofoodonline43@gmail.com>'
+DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <daniela.krmv@gmail.com>'
+
+GOOGLE_API_KEY = 'AIzaSyAeVbua9AyuRo56ocnwog-cyRwg1Rqcngg'
