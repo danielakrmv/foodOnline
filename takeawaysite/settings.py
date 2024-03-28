@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
 
     'accounts',
     'vendor',
+    'menu',
 ]
 
 MIDDLEWARE = [
@@ -156,3 +158,7 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <daniela.krmv@gmail.com>'
 
 GOOGLE_API_KEY = 'AIzaSyAeVbua9AyuRo56ocnwog-cyRwg1Rqcngg'
+
+os.environ['PATH'] = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo\gdal304.dll')
