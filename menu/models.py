@@ -6,7 +6,7 @@ from vendor.models import Vendor
 class Category(models.Model):
     # when Vendor is deleted this particular category is also deleted
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    category_name = models.CharField(max_length=50, unique=True)
+    category_name = models.CharField(max_length=50)
     slug = models.SlugField(max_length=100, unique=True) # this means the url of this particular category (if the category is sea food the slug will be sea-food)
     description = models.TextField(max_length=250, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
