@@ -74,7 +74,6 @@ def fooditems_by_category(request, pk=None):
 def add_category(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
-
         if form.is_valid():
             category_name = form.cleaned_data['category_name']
             category = form.save(commit=False)
@@ -87,6 +86,7 @@ def add_category(request):
             return redirect('menu_builder')
         else:
             print(form.errors)
+
     else:
         form = CategoryForm()
     context = {

@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-
+from django.template.defaultfilters import slugify
 from vendor.models import Vendor
 
 # Create your views here.
@@ -75,12 +75,12 @@ def registerVendor(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in!')
         return redirect('myAccount')
-    elif request.method == "POST":
+    elif request.method == 'POST':
         # store the data and create the user
         form = UserForm(request.POST)
         v_form = VendorForm(request.POST, request.FILES)
 
-        if form.is_valid() and v_form.is_valid():
+        if form.is_valid() and v_form.is_valid:
 
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
@@ -93,7 +93,10 @@ def registerVendor(request):
             user.save()
             vendor = v_form.save(commit=False)
             vendor.user = user
-            vendor.user_profile = UserProfile.objects.get(user=user)
+            vendor_name = v_form.cleaned_data['vendor_name']
+            vendor.vendor_slug = slugify(vendor_name)+'-'+str(user.id)
+            user_profile = UserProfile.objects.get(user=user)
+            vendor.user_profile = user_profile
             vendor.save()
 
             # Send verification email
