@@ -37,7 +37,6 @@ def get_cart_amounts(request):
                 tax_percentage = i.tax_percentage
                 tax_amount_vat = round((tax_percentage * subtotal) / 100, 2)
                 tax_dict.update({tax_type: {str(tax_percentage): tax_amount_vat}})
-                print(tax_type, tax_percentage, tax_amount_vat)
             elif tax_type == "Delivery":
                 tax_value_delivery = i.tax_value
                 tax_dict.update({tax_type: {str(tax_value_delivery): tax_value_delivery}})
