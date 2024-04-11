@@ -77,6 +77,7 @@ TEMPLATES = [
                 'marketplace.context_processors.get_cart_counter',
                 'marketplace.context_processors.get_cart_amounts',
                 'accounts.context_processors.get_user_profile',
+                'accounts.context_processors.get_paypal_client_id',
             ],
         },
     },
@@ -170,3 +171,10 @@ GOOGLE_API_KEY = 'AIzaSyAeVbua9AyuRo56ocnwog-cyRwg1Rqcngg'
 os.environ['PATH'] = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
 os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
 GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'envpython\Lib\site-packages\osgeo\gdal304.dll')
+
+PAYPAL_CLIENT_ID = 'AWn0eRB08Lx37bUQTrAUWfPuGhsJhFIsxhA4o5DufQdj5nyBjqQ0zAbBF0TQFURFajJV33DcyZmthgDq'
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+USE_TZ = True
+TIME_ZONE = 'Europe/Sofia'

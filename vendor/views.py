@@ -10,7 +10,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from accounts.views import check_role_vendor
 from menu.models import Category, FoodItem
 from menu.forms import CategoryForm, FoodItemForm
-from django.template.defaultfilters import slugify
+# from django.template.defaultfilters import slugify
+from django.utils.text import slugify
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
 
@@ -78,14 +79,20 @@ def add_category(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             category_name = form.cleaned_data['category_name']
-            category = form.save(commit=False)
-            category.vendor = get_vendor(request)
-            
-            category.save() # here the category id will be generated
-            category.slug = slugify(category_name)+'-'+str(category.id) # chicken-15
-            category.save()
-            messages.success(request, 'Category added successfully!')
-            return redirect('menu_builder')
+            # category = form.save(commit=False)
+            vendor = get_vendor(request)
+
+            # Check if the category already exists for this vendor
+            if Category.objects.filter(category_name=category_name, vendor=vendor).exists():
+                form.add_error('category_name', 'Category with this name already exists for this vendor.')
+            else:
+                category = form.save(commit=False)
+                category.vendor = get_vendor(request)
+                category.save() # here the category id will be generated
+                category.slug = slugify(category_name, allow_unicode=True)+'-'+str(category.id) # chicken-15
+                category.save()
+                messages.success(request, 'Category added successfully!')
+                return redirect('menu_builder')
         else:
             print(form.errors)
 
@@ -107,7 +114,7 @@ def edit_category(request, pk=None):
             category_name = form.cleaned_data['category_name']
             category = form.save(commit=False)
             category.vendor = get_vendor(request)
-            category.slug = slugify(category_name)
+            category.slug = slugify(category_name, allow_unicode=True)
             form.save()
             messages.success(request, 'Category updated successfully!')
             return redirect('menu_builder')
@@ -138,7 +145,7 @@ def add_food(request):
             foodtitle = form.cleaned_data['food_title']
             food = form.save(commit=False)
             food.vendor = get_vendor(request)
-            food.slug = slugify(foodtitle)
+            food.slug = slugify(foodtitle, allow_unicode=True)
             form.save()
             messages.success(request, 'Food Item added successfully!')
             return redirect('fooditems_by_category', food.category.id)
@@ -164,7 +171,7 @@ def edit_food(request, pk=None):
             foodtitle = form.cleaned_data['food_title']
             food = form.save(commit=False)
             food.vendor = get_vendor(request)
-            food.slug = slugify(foodtitle)
+            food.slug = slugify(foodtitle, allow_unicode=True)
             form.save()
             messages.success(request, 'Food Item updated successfully!')
             return redirect('fooditems_by_category', food.category.id)
@@ -228,5 +235,3 @@ def remove_opening_hours(request, pk=None):
             hour = get_object_or_404(OpeningHour, pk=pk)
             hour.delete()
             return JsonResponse({'status': 'success', 'id': pk})
-    
-
