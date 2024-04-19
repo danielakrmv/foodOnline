@@ -104,10 +104,10 @@ def registerVendor(request):
 
             # Send verification email
             mail_subject = 'Please activate your account'
-            email_template = 'accounts/emails/account_verification_email.html'
+            email_template = 'accounts/emails/vendor_verification_email.html'
             send_verification_email(request, user, mail_subject, email_template)
 
-            messages.success(request, 'Your account has been registered sucessfully! Please wait for the approval.')
+            messages.success(request, 'Your account has been registered sucessfully! Please check your email for activation link and wait for the approval from our admin.')
             return redirect('registerVendor')
 
         else:
@@ -177,7 +177,7 @@ def myAccount(request):
 @user_passes_test(check_role_customer)
 def custDashboard(request):
     orders = Order.objects.filter(user=request.user, is_ordered=True)
-    recent_orders = orders[:5]
+    recent_orders = orders[:10]
     context = {
         'orders': orders,
         'orders_count': orders.count(),
