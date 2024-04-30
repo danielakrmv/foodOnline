@@ -1,3 +1,4 @@
+import re
 from django import forms
 from .models import User, UserProfile
 from .validators import allow_only_images_validator
@@ -14,6 +15,17 @@ class UserForm(forms.ModelForm):
         cleaned_data = super(UserForm, self).clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
+
+        if len(password) < 8:
+            raise forms.ValidationError('Password must be at least 8 characters long!')
+        if not re.search(r'\d', password):
+            raise forms.ValidationError('Password must contain at least one digit!')
+        if not re.search(r'[A-Z]', password):
+            raise forms.ValidationError('Password must contain at least one uppercase letter!')
+        if not re.search(r'[a-z]', password):
+            raise forms.ValidationError('Password must contain at least one lowercase letter!')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            raise forms.ValidationError('Password must contain at least one special character!')
 
         if password != confirm_password:
             raise forms.ValidationError(

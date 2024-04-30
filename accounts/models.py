@@ -9,18 +9,6 @@ from django.contrib.gis.geos import Point
 # Base User Manager will allow to edit the way how the users and super users are created.
 class UserManager(BaseUserManager):
 
-    def validate_password(self, password):
-        if len(password) < 8:
-            raise ValueError('Password must be at least 8 characters long!')
-        if not re.search(r'\d', password):
-            raise ValueError('Password must contain at least one digit!')
-        if not re.search(r'[A-Z]', password):
-            raise ValueError('Password must contain at least one uppercase letter!')
-        if not re.search(r'[a-z]', password):
-            raise ValueError('Password must contain at least one lowercase letter!')
-        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-            raise ValueError('Password must contain at least one special character!')
-
     def create_user(self, first_name, last_name, username, email, password=None):
         if not email:
             raise ValueError('User must have an email!')
@@ -28,7 +16,6 @@ class UserManager(BaseUserManager):
         if not username:
             raise ValueError('User must have an username!')
         
-        self.validate_password(password)
         
         user = self.model(
             # normalize email it will take the email address from me and if this address is with uppercase letters it will convert them to lowercase.
