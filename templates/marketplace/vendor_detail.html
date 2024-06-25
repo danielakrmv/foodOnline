@@ -100,14 +100,24 @@
                                         <ul>
                                             {% for food in category.fooditems.all %}
                                             <li>
-                                                <div class="image-holder"><img src="{{ food.image.url }}" alt=""></div>
+                                                <div class="image-holder"> <img src="{{ food.image.url }}" alt=""></div>
                                                 <div class="text-holder">
                                                     <h6>{{ food }}</h6>
-                                                    <span>{{food.description}}</span>
+                                                    <span>{{ food.description }}</span>
                                                 </div>
-                                                <div class="price-holder">
-                                                    <span class="price">BGN {{ food.price }}</span>
+                                                <!-- <div class="price-holder">
+                                                    <span class="price" style="margin-top: 28px;">BGN {{ food.price }}</span>
+
                                                     <a href="#" class="decrease_cart" data-id="{{ food.id }}" data-url="{% url 'decrease_cart' food.id %}" style="margin-right: 28px;"><i class="icon-minus text-color"></i></a>
+                                                    <label id="qty-{{food.id}}">0</label>
+                                                    <a href="#" class="add_to_cart" data-id="{{ food.id }}" data-url="{% url 'add_to_cart' food.id %}"><i class="icon-plus4 text-color"></i></a>
+                                                    
+                                                </div> -->
+                                                <div class="price-holder">
+                                                    <span class="price" style="margin-top: 28px;">BGN {{ food.price }}</span>
+                                                </div>
+                                                <div class="quantity-holder">
+                                                    <a href="#" class="decrease_cart" data-id="{{ food.id }}" data-url="{% url 'decrease_cart' food.id %}"><i class="icon-minus text-color"></i></a>
                                                     <label id="qty-{{food.id}}">0</label>
                                                     <a href="#" class="add_to_cart" data-id="{{ food.id }}" data-url="{% url 'add_to_cart' food.id %}"><i class="icon-plus4 text-color"></i></a>
                                                     

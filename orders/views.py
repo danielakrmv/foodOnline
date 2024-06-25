@@ -97,14 +97,15 @@ def place_order(request):
 
 @login_required(login_url='login')
 def payments(request):
-
+    # Checks if the request is an AJAX request and if it is a POST method
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST':
-        # STORE THE PAYMENT DETAILS IN THE PAYMENT MODEL
+        # Retrieves the payment details from the POST request and store them into the Payment model
         order_number = request.POST.get('order_number')
         transaction_id = request.POST.get('transaction_id')
         payment_method = request.POST.get('payment_method')
         status = request.POST.get('status')
 
+        # Finds the relevant order
         order = Order.objects.get(user=request.user, order_number=order_number)
         payment = Payment(
             user = request.user,

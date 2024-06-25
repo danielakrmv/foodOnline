@@ -9,6 +9,15 @@ import simplejson as json
 # Create your views here.
 @login_required(login_url='login')
 def cprofile(request):
+    """
+    View for displaying and updating customer profile information.
+
+    GET: Renders the profile update form.
+    POST: Handles form submission and updates the profile information.
+
+    Returns:
+        Renders the customer profile page.
+    """
     profile = get_object_or_404(UserProfile, user=request.user)
     
     if request.method == 'POST':
@@ -17,7 +26,7 @@ def cprofile(request):
         if profile_form.is_valid() and user_form.is_valid():
             profile_form.save()
             user_form.save()
-            messages.success(request, 'Profile updated')
+            messages.success(request, 'Профилът е обновен!')
             return redirect('cprofile')
         else:
             print(profile_form.errors)
@@ -34,6 +43,12 @@ def cprofile(request):
     return render(request, 'customers/cprofile.html', context)
 
 def my_orders(request):
+    """
+    View for displaying a list of customer orders.
+
+    Returns:
+        Renders the page with a list of customer orders.
+    """
     orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
 
     context = {
@@ -42,6 +57,15 @@ def my_orders(request):
     return render(request, 'customers/my_orders.html', context)
 
 def order_detail(request, order_number):
+    """
+    View for displaying details of a specific customer order.
+
+    Args:
+        order_number: The order number to retrieve details for.
+
+    Returns:
+        Renders the page with details of the specified order.
+    """
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_food = OrderedFood.objects.filter(order=order)

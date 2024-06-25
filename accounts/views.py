@@ -9,7 +9,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-from django.template.defaultfilters import slugify
+# from django.template.defaultfilters import slugify
+from django.utils.text import slugify
 from vendor.models import Vendor
 from orders.models import Order
 
@@ -19,6 +20,15 @@ import datetime
 
 # Restrict the vendor from accessing the custom page
 def check_role_vendor(user):
+    """
+    Restricts access to vendor-specific pages.
+
+    Args:
+        user (User): The user object.
+
+    Returns:
+        bool: True if the user is a vendor, otherwise raises PermissionDenied.
+    """
     if user.role == 1:
         return True
     else:
@@ -26,14 +36,32 @@ def check_role_vendor(user):
 
 # Restrict the customer from accessing the vendor page 
 def check_role_customer(user):
+    """
+    Restricts access to customer-specific pages.
+
+    Args:
+        user (User): The user object.
+
+    Returns:
+        bool: True if the user is a customer, otherwise raises PermissionDenied.
+    """
     if user.role == 2:
         return True
     else:
         raise PermissionDenied
 
 def registerUser(request):
+    """
+    Handles user registration and email verification.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered template for user registration.
+    """
     if request.user.is_authenticated:
-        messages.warning(request, 'You are already logged in!')
+        messages.warning(request, 'Вие вече сте в профила си!')
         return redirect('dashboard')
     elif request.method == "POST":
         form = UserForm(request.POST)
@@ -58,11 +86,11 @@ def registerUser(request):
             user.save()
 
             # Send verification email
-            mail_subject = 'Please activate your account'
+            mail_subject = 'Моля, активирайте своя акаунт!'
             email_template = 'accounts/emails/account_verification_email.html'
             send_verification_email(request, user, mail_subject, email_template)
 
-            messages.success(request, 'Your account has been registered sucessfully! Check your email for activation!')
+            messages.success(request, 'Вашият акаунт беше регистриран успешно! Проверете имейла си за активиране!')
             return redirect('registerUser')
 
         else:
@@ -75,8 +103,17 @@ def registerUser(request):
     return render(request, 'accounts/registerUser.html', context)
 
 def registerVendor(request):
+    """
+    Handles vendor registration, vendor profile creation, and email verification.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered template for vendor registration.
+    """
     if request.user.is_authenticated:
-        messages.warning(request, 'You are already logged in!')
+        messages.warning(request, 'Вие вече сте в профила си!')
         return redirect('myAccount')
     elif request.method == 'POST':
         # store the data and create the user
@@ -97,17 +134,17 @@ def registerVendor(request):
             vendor = v_form.save(commit=False)
             vendor.user = user
             vendor_name = v_form.cleaned_data['vendor_name']
-            vendor.vendor_slug = slugify(vendor_name)+'-'+str(user.id)
+            vendor.vendor_slug = slugify(vendor_name, allow_unicode=True)+'-'+str(user.id)
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
 
             # Send verification email
-            mail_subject = 'Please activate your account'
+            mail_subject = 'Моля активирайте своя акаунт'
             email_template = 'accounts/emails/vendor_verification_email.html'
             send_verification_email(request, user, mail_subject, email_template)
 
-            messages.success(request, 'Your account has been registered sucessfully! Please check your email for activation link and wait for the approval from our admin.')
+            messages.success(request, 'Вашият акаунт беше регистриран успешно! Моля, проверете имейла си за активиращ линк и изчакайте одобрение от нашия администратор.')
             return redirect('registerVendor')
 
         else:
@@ -125,6 +162,17 @@ def registerVendor(request):
     return render(request, 'accounts/registerVendor.html', context)
 
 def activate(request, uidb64, token):
+    """
+    Activates user accounts via email verification links.
+
+    Args:
+        request (HttpRequest): The request object.
+        uidb64 (str): Base64 encoded user ID.
+        token (str): Token for validating the user.
+
+    Returns:
+        HttpResponse: Redirects to the account page with success or error messages.
+    """
     # Activate the user by setting the is_active status to True
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -135,16 +183,25 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(request, 'Congratulation! Your account is activated!.')
+        messages.success(request, 'Поздравления! Вашият акаунт е активиран!.')
         return redirect('myAccount')
     else:
         messages.error(request, 'Invalid activation link.')
         return redirect('myAccount')
 
 def login(request):
+    """
+    Handles user login.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: Redirects to the appropriate dashboard or re-renders the login page with errors.
+    """
 
     if request.user.is_authenticated:
-        messages.warning(request, 'You are already logged in!')
+        messages.warning(request, 'Вече сте в профила си!')
         return redirect('myAccount')
     elif request.method == 'POST':
         email = request.POST['email']
@@ -154,7 +211,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            messages.success(request, 'You are now logged in.')
+            messages.success(request, 'Влязохте в профила си.')
             return redirect('myAccount')
         else:
             messages.error(request, 'Invalid login credentials')
@@ -163,12 +220,30 @@ def login(request):
     return render(request, 'accounts/login.html')
 
 def logout(request):
+    """
+    Logs out the user.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: Redirects to the login page with an informational message.
+    """
     auth.logout(request)
-    messages.info(request, 'You are logged out.')
+    messages.info(request, 'Излязохте от профила си.')
     return redirect('login')
 
 @login_required(login_url='login')
 def myAccount(request):
+    """
+    Redirects users to their respective dashboards based on their roles.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: Redirects to the appropriate dashboard.
+    """
     user = request.user
     redirectUrl = detectUser(user)
     return redirect(redirectUrl)
@@ -176,8 +251,18 @@ def myAccount(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_customer)
 def custDashboard(request):
+    """
+    Renders the customer dashboard view.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered template for the customer dashboard.
+    """
     orders = Order.objects.filter(user=request.user, is_ordered=True)
-    recent_orders = orders[:10]
+    recent_orders = orders.order_by('-created_at')[:5]
+
     context = {
         'orders': orders,
         'orders_count': orders.count(),
@@ -188,9 +273,18 @@ def custDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
+    """
+    Renders the vendor dashboard view, including order and revenue data.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered template for the vendor dashboard.
+    """
     vendor = Vendor.objects.get(user=request.user)
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by('-created_at')
-    recent_orders = orders[:10]
+    recent_orders = orders[:5]
 
     # current month's revenue
     current_month = datetime.datetime.now().month
@@ -216,6 +310,15 @@ def vendorDashboard(request):
 
 
 def forgot_password(request):
+    """
+    Handles password reset requests by sending reset links via email.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: The rendered template for the forgot password page or redirects to the login page with messages.
+    """
 
     if request.method == 'POST':
         email = request.POST['email']
@@ -225,11 +328,11 @@ def forgot_password(request):
             user = User.objects.get(email__exact=email)
 
             # send reset password email
-            mail_subject = 'Reset Your Password'
+            mail_subject = 'Възстановете своята парола'
             email_template = 'accounts/emails/reset_password_email.html'
             send_verification_email(request, user, mail_subject, email_template)
 
-            messages.success(request, 'Password reset link has been sent to your email address.')
+            messages.success(request, 'Линк за обновяване на паролата беше изпратен.')
             return redirect('login')
         else:
             messages.error(request, 'Account does not exist')
@@ -237,6 +340,18 @@ def forgot_password(request):
     return render(request, 'accounts/forgot_password.html')
 
 def reset_password_validate(request, uidb64, token):
+    """
+    Validates the password reset link and user.
+
+    Args:
+        request (HttpRequest): The request object.
+        uidb64 (str): Base64 encoded user ID.
+        token (str): Token for validating the user.
+
+    Returns:
+        HttpResponse: Redirects to the password reset page or account page with messages.
+    """
+
     # validate the user by decoding the token and user pk
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -247,13 +362,23 @@ def reset_password_validate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         # save uid inside the current session
         request.session['uid'] = uid
-        messages.info(request, 'Please reset your password')
+        messages.info(request, 'Моля обновете вашата парола!')
         return redirect('reset_password')
     else:
         messages.error(request, 'This link has been expired!')
         return redirect('myAccount')
 
 def reset_password(request):
+    """
+    Handles password reset form submissions.
+
+    Args:
+        request (HttpRequest): The request object.
+
+    Returns:
+        HttpResponse: Redirects to the login page with a success message or re-renders the reset password page with errors.
+    """
+    
     if request.method == 'POST':
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
@@ -264,9 +389,9 @@ def reset_password(request):
             user.set_password(password)
             user.is_active = True
             user.save()
-            messages.success(request, 'Password reset successful')
+            messages.success(request, 'Паролата е обновена успешно!')
             return redirect('login')
         else:
-            messages.error(request, 'Password do not match!')
+            messages.error(request, 'Паролата не е обновена!')
             return redirect('reset_password')
     return render(request, 'accounts/reset_password.html')

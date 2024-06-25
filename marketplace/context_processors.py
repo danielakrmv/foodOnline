@@ -2,6 +2,18 @@ from .models import Cart, Tax
 from menu.models import FoodItem
 
 def get_cart_counter(request):
+    """
+    Returns the total quantity of items in the user's cart.
+
+    This function calculates the total number of items in the cart for the authenticated user.
+    If the user is not authenticated, it returns a count of 0.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing user information.
+
+    Returns:
+        dict: A dictionary with the total quantity of items in the cart as 'cart_count'.
+    """
     cart_count = 0
     if request.user.is_authenticated:
         try:
@@ -16,6 +28,18 @@ def get_cart_counter(request):
     return dict(cart_count=cart_count)
 
 def get_cart_amounts(request):
+    """
+    Calculates and returns the subtotal, tax, grand total, and detailed tax information for the user's cart.
+
+    This function calculates the subtotal of all items in the user's cart, applies active taxes, and calculates
+    the grand total. It also returns a detailed breakdown of the applied taxes.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing user information.
+
+    Returns:
+        dict: A dictionary containing the subtotal, tax, grand total, and detailed tax information.
+    """
     subtotal = 0
     tax = 0
     grand_total = 0

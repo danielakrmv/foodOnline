@@ -9,7 +9,7 @@
                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
                     <div class="tabs-holder horizontal">
                         <ul class="stickynav-tabs nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Review Your Billing Address</a></li>
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Прегледайте адреса за фактуриране</a></li>
                             
                         </ul>
                         <div class="tab-content">
@@ -27,7 +27,7 @@
                                             <div><b>Email: </b>{{ order.email }}</div>
                                             <div><b>Payment: </b>{{ order.payment_method }}</div>
                                             <br>
-                                            <div><a href="{% url 'checkout' %}" class="btn btn-outline-danger">Edit</a></div>
+                                            <div><a href="{% url 'checkout' %}" class="btn btn-outline-danger">Редактирай</a></div>
                                             <br>
                                         </div>
                                     </div>
@@ -44,7 +44,7 @@
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                     <div class="tabs-holder horizontal">
                         <ul class="stickynav-tabs nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Your Order</a></li>
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Твоята поръчка</a></li>
                             
                         </ul>
                         <div class="tab-content">
@@ -69,7 +69,7 @@
 
                                         <ul>
                                             <li style="list-style-type: none;">
-                                                Subtotal
+                                                Междинна сума
                                                 <span class="price float-right">
                                                     <span class="currency">BGN</span>
                                                     <span id="subtotal">{{ subtotal }}</span>
@@ -79,7 +79,7 @@
                                                 {% for i, j in value.items %}
                                                     {% if key == "Delivery" %}
                                                         <li style="list-style-type: none;">
-                                                            {{key}}
+                                                            Доставка
                                                             <span class="price float-right">
                                                                 <span class="currency">BGN</span>
                                                                 <span id="tax-{{ key }}">{{ j }}</span>
@@ -97,7 +97,7 @@
                                                 {% endfor %}
                                             {% endfor %}
                                             <li style="list-style-type: none; font-weight: 600;">
-                                                TOTAL
+                                                Крайна сума
                                                 <span class="price float-right">
                                                     <span class="currency">BGN</span>
                                                     <span id="total">{{ grand_total }}</span>
@@ -123,7 +123,7 @@
 <!-- Main Section End -->
 
 <script>
-
+    // Function for extracting the value of Cookies; It is used because we need a CSRF token for security when sending AJAX requests to the server.
     function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -140,16 +140,17 @@
         return cookieValue;
     }
 
-    var grand_total = parseFloat("{{ grand_total }}") / 2;
+    var grand_total = parseFloat("{{ grand_total }}") / 2; // Calculates and formats the final payment amount.
     grand_total = grand_total.toFixed(2);
-    var url = "{% url 'payments' %}"
-    var order_number = "{{ order.order_number }}"
-    const csrftoken = getCookie('csrftoken');
-    var order_complete = "{% url 'order_complete' %}"
+    var url = "{% url 'payments' %}" // URL for server payment processing.
+    var order_number = "{{ order.order_number }}" // Order number
+    const csrftoken = getCookie('csrftoken'); // CSRF token to protect data when sending.
+    var order_complete = "{% url 'order_complete' %}" // URL for a page that confirms a completed order.
 
     paypal.Buttons({
 
-    // Set up the transaction
+    // When the payment button is pressed, the following operations occur:
+    // Creates a PayPal order with the specified final payment amount.
     createOrder: function(data, actions) {
         return actions.order.create({
             purchase_units: [{
@@ -160,26 +161,26 @@
         });
     },
 
-    // Finalize the transaction
+    // Finalizes the transaction
+    // When the transaction is approved, the order is completed and the transaction information is retrieved.
     onApprove: function(data, actions) {
         return actions.order.capture().then(function(orderData) {
             var transaction = orderData.purchase_units[0].payments.captures[0];
-            // alert('Transaction ' + transaction.status + ': ' + transaction.id + 'fklamc');
 
             var transaction_id = transaction.id
             var status = orderData.status
             var payment_method = 'PayPal'
+            // Sends the transaction data to the save server.
             sendTransaction(transaction_id, payment_method, status);
 
-            // Replace the above to show a success message within this page, e.g.
+            // Updates the element content to display a message that the transaction is being processed.
             const element = document.getElementById('paypal-button-container');
             element.innerHTML = '';
             element.innerHTML = '<h4 class="text-center"><i class="fa fa-spinner fa-spin"></i> Please wait...</h4>';
-            // Or go to another URL:  actions.redirect('thank_you.html');
         });
     }}).render('#paypal-button-container');
 
-    // Send the data to payments view to store in the database
+    // Stores the data in the database.
     function sendTransaction(transaction_id, payment_method, status){
         $.ajax({
             type: 'POST',

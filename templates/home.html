@@ -13,9 +13,9 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
 					<div class="element-title">
 						<h1 style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
-							We are in the business of food<br></h1>
+							Ние сме част от хранителния бизнес<br></h1>
 						<p style="font-size: 18px; letter-spacing: 1px; color: #505050; text-align:center;">
-							Select a location or a specific food in the search box and our site will take care of you.</p>
+							Изберете локация, специфичен ресторант или име на определено ястие и нашият сайт ще се погрижи за останалото.</p>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -24,7 +24,7 @@
 							<div class="row">
 								<div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
 									<div class="field-holder">
-										<input type="text" name="keyword" placeholder="Resturant name or food name">
+										<input type="text" name="keyword" placeholder="Име на ресторант или храна">
 									</div>
 								</div>
 								<div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
@@ -33,7 +33,7 @@
 											<li class="select-location">
 												<div class="foodbakery-locations-fields-group foodbakery-focus-out">
 													<span class="foodbakery-search-location-icon"><i class="icon-location"></i></span>
-													<input type="text" name="address" class="location-field-text filter" id="id_address" required placeholder="All Locations">
+													<input type="text" name="address" class="location-field-text filter" id="id_address" required placeholder="Всички локации">
 													<input type="hidden" name="lat" value="" id="id_latitude">
 													<input type="hidden" name="lng" value="" id="id_longitude">
 												</div>
@@ -43,7 +43,7 @@
 								</div>
 								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 									<select name="radius" id="radius" style="height: 50px;" required>
-										<option value="" selected>Choose Radius</option>
+										<option value="" selected>Избери радиус</option>
 										<option value="5">5km</option>
 										<option value="10">10km</option>
 										<option value="20">20km</option>
@@ -57,7 +57,7 @@
 								</div>
 								<div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
 									<div class="field-holder">
-										<input type="submit" value="Search">
+										<input type="submit" value="Търси">
 									</div>
 								</div>
 							</div>
@@ -76,8 +76,8 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="element-title align-left">
-						<h2>Top Restaurants</h2>
-						<p>Explore restaurants, bars, and cafés by locality</p>
+						<h2>Топ ресторанти</h2>
+						<p>Проучи всички ресторанти, кафета или сладкарници, регистрирани в нашата система.</p>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-right: 0 !important; padding-left: 0 !important;">
@@ -107,7 +107,7 @@
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="element-title align-center">
-						<h2>Choose From Most Popular Restaurants</h2>
+						<h2>Избери между най-популярните заведения</h2>
 					</div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -149,15 +149,15 @@
 
 										{% if vendor.kms %}
 											<br>
-											<span><small><b>{{vendor.kms}}  km</b> away</small></span>
+											<span><small><b>{{vendor.kms}}  km</b> разстояние</small></span>
 										{% endif %}
 									</div>
 
-									<div class="list-option">
+									<!-- <div class="list-option">
 										<a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
 											<i class="icon-heart-o"></i>
 										</a>
-									</div>
+									</div> -->
 									
 								</div>
 							</li>

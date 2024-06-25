@@ -6,6 +6,19 @@ from accounts.utils import send_notification
 from datetime import time, date, datetime
 
 class Vendor(models.Model):
+    """
+    Vendor model represents a vendor in the system, associated with a User and UserProfile.
+    
+    Fields:
+        user (OneToOneField): A one-to-one relationship with the User model.
+        user_profile (OneToOneField): A one-to-one relationship with the UserProfile model.
+        vendor_name (CharField): The name of the vendor.
+        vendor_slug (SlugField): A unique slug for the vendor.
+        vendor_license (ImageField): An image field for the vendor's license.
+        is_approved (BooleanField): Indicates whether the vendor is approved.
+        created_at (DateTimeField): The timestamp when the vendor was created.
+        modified_at (DateTimeField): The timestamp when the vendor was last modified.
+    """
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     user_profile = models.OneToOneField(UserProfile, related_name='userprofile', on_delete=models.CASCADE)
     vendor_name = models.CharField(max_length=50)
@@ -16,9 +29,18 @@ class Vendor(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        """
+        Returns the string representation of the vendor, which is the vendor name.
+        """
         return self.vendor_name
 
     def is_open(self):
+        """
+        Checks if the vendor is currently open based on today's date and current time.
+        
+        Returns:
+            bool: True if the vendor is open, False otherwise.
+        """
         # Check current day's opening hours.
         today_date = date.today()
         today = today_date.isoweekday()
@@ -41,6 +63,9 @@ class Vendor(models.Model):
         return is_open
 
     def save(self, *args, **kwargs):
+        """
+        Overrides the save method to send a notification email if the vendor's approval status changes.
+        """
         if self.pk is not None:
             # Update
             orig = Vendor.objects.get(pk=self.pk)
@@ -75,6 +100,16 @@ DAYS = [
 HOUR_OF_DAY_24 = [(time(h, m).strftime('%I:%M %p'), time(h, m).strftime('%I:%M %p')) for h in range(0, 24) for m in (0, 30)]
 
 class OpeningHour(models.Model):
+    """
+    OpeningHour model represents the opening hours for a vendor.
+    
+    Fields:
+        vendor (ForeignKey): A foreign key relationship to the Vendor model.
+        day (IntegerField): The day of the week (1 for Monday, 7 for Sunday).
+        from_hour (CharField): The opening time in 12-hour format.
+        to_hour (CharField): The closing time in 12-hour format.
+        is_closed (BooleanField): Indicates whether the vendor is closed on this day.
+    """
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     day = models.IntegerField(choices=DAYS)
     from_hour = models.CharField(choices=HOUR_OF_DAY_24, max_length=10, blank=True)
@@ -86,4 +121,7 @@ class OpeningHour(models.Model):
         unique_together = ('vendor', 'day', 'from_hour', 'to_hour')
 
     def __str__(self):
+        """
+        Returns the string representation of the opening hour, which is the day of the week.
+        """
         return self.get_day_display()

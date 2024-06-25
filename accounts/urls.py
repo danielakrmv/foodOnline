@@ -1,6 +1,23 @@
 from django.urls import path, include
 from . import views
 
+"""
+This module contains URL patterns for the main application.
+
+Functions:
+    - myAccount: View for the main account page.
+    - registerUser: View for registering a new user.
+    - registerVendor: View for registering a new vendor.
+    - user_login: View for user login.
+    - user_logout: View for user logout.
+    - custDashboard: View for the customer dashboard.
+    - vendorDashboard: View for the vendor dashboard.
+    - activate: View for activating user accounts.
+    - forgot_password: View for handling forgot password requests.
+    - reset_password_validate: View for validating reset password requests.
+    - reset_password: View for resetting passwords.
+"""
+
 urlpatterns = [
     path('', views.myAccount),
     path('registerUser/', views.registerUser, name='registerUser'),

@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
     path('', views.marketplace, name='marketplace'),
 
-    path('<slug:vendor_slug>/', views.vendor_detail, name='vendor_detail'),
+    re_path(r'^(?P<vendor_slug>[-\w]+)/$', views.vendor_detail, name='vendor_detail'),
+    # path('<slug:vendor_slug>/', views.vendor_detail, name='vendor_detail'),
 
     # ADD TO CART
     path('add_to_cart/<int:food_id>/', views.add_to_cart, name='add_to_cart'),

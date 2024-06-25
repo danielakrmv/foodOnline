@@ -9,7 +9,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div class="tabs-holder horizontal">
                         <ul class="stickynav-tabs nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Billing Address</a></li>
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="fa fa-shopping-cart text-danger"></i>Адрес за доставка</a></li>
                             
                         </ul>
                         <div class="tab-content">
@@ -22,40 +22,40 @@
                                             
                                             <div class="row">
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    First Name: {{ form.first_name }}
+                                                    Име: {{ form.first_name }}
                                                 </div>
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    Last Name: {{ form.last_name }}
+                                                    Фамилия: {{ form.last_name }}
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    Phone Number: {{ form.phone }}
+                                                    Телефонен номер: {{ form.phone }}
                                                 </div>
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    Email Address: {{ form.email }}
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="form-group col-md-12 col-sm-12 col-lg-12">
-                                                    Address: {{ form.address }}
+                                                    Имейл: {{ form.email }}
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="form-group col-md-12 col-sm-12 col-lg-12">
-                                                    Country: {{ form.country }}
+                                                    Адрес: {{ form.address }}
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="form-group col-md-12 col-sm-12 col-lg-12">
+                                                    Държава: {{ form.country }}
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    City: {{ form.city }}
+                                                    Град: {{ form.city }}
                                                 </div>
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
-                                                    Pin Code: {{ form.pin_code }}
+                                                    Пощенски код: {{ form.pin_code }}
                                                 </div>
                                             </div>
 
@@ -71,7 +71,7 @@
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="tabs-holder horizontal">
                         <ul class="stickynav-tabs nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Your Order</a></li>
+                            <li class="active"><a data-toggle="tab" href="#home"><i class="icon- icon-room_service"></i>Твоята поръчка</a></li>
                             
                         </ul>
                         <div class="tab-content">
@@ -104,7 +104,7 @@
                                     <div>
                                         <ul>
                                             <li style="list-style-type: none;">
-                                                Subtotal
+                                                Междинна сума
                                                 <span class="price float-right">
                                                     <span class="currency">BGN</span>
                                                     <span id="subtotal">{{ subtotal }}</span>
@@ -114,7 +114,7 @@
                                                 {% for i, j in value.items %}
                                                     {% if key == "Delivery" %}
                                                         <li style="list-style-type: none;">
-                                                            {{key}}
+                                                            Доставка
                                                             <span class="price float-right">
                                                                 <span class="currency">BGN</span>
                                                                 <span id="tax-{{ key }}">{{ j }}</span>
@@ -132,7 +132,7 @@
                                                 {% endfor %}
                                             {% endfor %}
                                             <li style="list-style-type: none; font-weight: 600;">
-                                                TOTAL
+                                                Крайна сума
                                                 <span class="price float-right">
                                                     <span class="currency">BGN</span>
                                                     <span id="total">{{ grand_total }}</span>
@@ -140,7 +140,7 @@
                                             </li>
 
                                             <!-- SELECT PAYMENT METHOD -->
-                                            <h5>SELECT PAYMENT METHOD</h5>
+                                            <h5>Избери метод на плащане</h5>
                                             <div class="payment-method" style="display: flex; justify-content: center;">
                                                 <label>
                                                     <input type="radio" name="payment_method" value="PayPal">
@@ -155,7 +155,7 @@
                                             <span class="text-danger" id="payment-method-error"></span>
                                             <!-- SELECT PAYMENT METHOD -->
 
-                                            <button onclick="return payMethodConfirm();" type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
+                                            <button onclick="return payMethodConfirm();" type="submit" class="btn btn-danger w-100 p-2 mt-3">НАПРАВИ ПОРЪЧКА</button>
                                         </ul>
 
                                         <!-- End the form -->

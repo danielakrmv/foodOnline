@@ -17,7 +17,7 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
-                            <h5 class="text-uppercase">Manage Your Restaurant</h5>
+                            <h5 class="text-uppercase">Управлявай своя ресторант</h5>
                             <!-- My Restaurants Form Start -->
 									<form action="{% url 'vprofile' %}" method="POST" enctype="multipart/form-data">
                                         {% csrf_token %}
@@ -43,7 +43,7 @@
 																	</ul>
 																</div>
 																<div class="text-holder">
-																	<label>Update Profile Picture</label>
+																	<label>Обнови профилната снимка</label>
 																	<div class="upload-gallery">
 																		{{profile_form.profile_picture}}
 																	</div>
@@ -69,7 +69,7 @@
 																	</ul>
 																</div>
 																<div class="text-holder">
-																	<label>Update Cover Photo</label>
+																	<label>Обнови снимката на корицата</label>
 																	<div class="upload-gallery">
 																		{{profile_form.cover_photo}}
 																	</div>
@@ -92,7 +92,7 @@
 																	</ul>
 																</div>
 																<div class="text-holder">
-																	<label>Update License</label>
+																	<label>Обнови Лиценз</label>
 																	<div class="upload-gallery">
 																		{{vendor_form.vendor_license}}
 																	</div>
@@ -103,14 +103,14 @@
 														</div>
 														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Restaurant name *</label>
+																<label>Име на ресторант *</label>
 																{{vendor_form.vendor_name}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Address *</label>
+																<label>Адрес *</label>
 																{{profile_form.address}}
                                                                 <small class="text-muted">powered by Google</small>
 															</div>
@@ -118,35 +118,35 @@
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Country *</label>
+																<label>Държава *</label>
 																{{profile_form.country}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>City *</label>
+																<label>Град *</label>
 																{{profile_form.city}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Post code *</label>
+																<label>Пощенски код *</label>
 																{{profile_form.pin_code}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Latitude *</label>
+																<label>Географска ширина *</label>
 																{{profile_form.latitude}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
-																<label>Longitude *</label>
+																<label>Географска дължина *</label>
 																{{profile_form.longitude}}
 															</div>
 														</div>
@@ -157,7 +157,7 @@
 											<div>
 												<div class="field-holder">
 													<div class="payment-holder input-button-loader">
-														<input type="submit" value="Update Restaurant">
+														<input type="submit" value="Обнови информацията">
 													</div>
 												</div>
 											</div>
