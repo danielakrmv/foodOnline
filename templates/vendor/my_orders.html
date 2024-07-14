@@ -42,7 +42,14 @@
                                                             <td><b><a href="{% url 'vendor_order_detail' order.order_number %}">{{ order.order_number }}</a></b></td>
                                                             <td>{{ order.name }}</td>
                                                             <td>BGN {{ order.get_total_by_vendor.grand_total|floatformat:2 }}</td>
-                                                            <td>{{ order.status }}</td>
+                                                            <td>
+                                                                <select class="form-control status-select" data-order-id="{{ order.id }}">
+                                                                    {% for key, value in order.STATUS %}
+                                                                    <option value="{{ key }}" {% if order.status == key %}selected{% endif %}>{{ value }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </td>
+                                                            <!-- <td>{{ order.status }}</td> -->
                                                             <td>{{ order.created_at }}</td>
                                                             <td><a href="{% url 'vendor_order_detail' order.order_number %}" class="btn btn-danger">Детайли</a></td>
                                                         </tr>
@@ -63,5 +70,60 @@
     </div>
 </div>
 <!-- Main Section End -->
+
+<script>
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+    console.log('CSRF Token:', csrftoken);  // Debugging statement
+
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const newStatus = this.value;
+
+            console.log(`Updating order ${orderId} to status ${newStatus}`);
+
+            fetch("{% url 'update_order_status' order_id=0 %}".replace('/0/', '/' + orderId + '/'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    status: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                if (data.status === 'success') {
+                    alert('Статусът на поръчката е обновен.');
+                } else {
+                    alert('Failed to update order status: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the order status.');
+            });
+        });
+    });
+</script>
 
 {% endblock %}

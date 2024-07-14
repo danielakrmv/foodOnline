@@ -15,6 +15,7 @@ from orders.models import Order, OrderedFood
 from django.utils.text import slugify
 from django.http import HttpResponse, JsonResponse
 from django.db import IntegrityError
+import json
 
 # Create your views here.
 
@@ -149,7 +150,7 @@ def add_category(request):
                 category.save() # here the category id will be generated
                 category.slug = slugify(category_name, allow_unicode=True)+'-'+str(category.id) # chicken-15
                 category.save()
-                messages.success(request, 'Category added successfully!')
+                messages.success(request, 'Категорията е добавена успешно!')
                 return redirect('menu_builder')
         else:
             print(form.errors)
@@ -187,7 +188,7 @@ def edit_category(request, pk=None):
             category.vendor = get_vendor(request)
             category.slug = slugify(category_name, allow_unicode=True)
             form.save()
-            messages.success(request, 'Category updated successfully!')
+            messages.success(request, 'Категорията е обновена успешно!')
             return redirect('menu_builder')
     else:
         form = CategoryForm(instance=category)
@@ -216,7 +217,7 @@ def delete_category(request, pk=None):
     """
     category = get_object_or_404(Category, pk=pk)
     category.delete()
-    messages.success(request, 'Category has been deleted successfully!')
+    messages.success(request, 'Категорията е изтрита успешно!')
     return redirect('menu_builder')
 
 
@@ -243,7 +244,7 @@ def add_food(request):
             food.vendor = get_vendor(request)
             food.slug = slugify(foodtitle, allow_unicode=True)
             form.save()
-            messages.success(request, 'Food Item added successfully!')
+            messages.success(request, 'Храната е добавена успешно!')
             return redirect('fooditems_by_category', food.category.id)
         else:
             print(form.errors)
@@ -282,7 +283,7 @@ def edit_food(request, pk=None):
             food.vendor = get_vendor(request)
             food.slug = slugify(foodtitle, allow_unicode=True)
             form.save()
-            messages.success(request, 'Food Item updated successfully!')
+            messages.success(request, 'Храната е обновена успешно!')
             return redirect('fooditems_by_category', food.category.id)
         else:
             print(form.errors)
@@ -315,7 +316,7 @@ def delete_food(request, pk=None):
 
     food = get_object_or_404(FoodItem, pk=pk)
     food.delete()
-    messages.success(request, 'Food Item has been deleted successfully!')
+    messages.success(request, 'Хранителният артикул е изтрит успешно!')
     return redirect('fooditems_by_category', food.category.id)
 
 def opening_hours(request):
@@ -412,6 +413,10 @@ def order_detail(request, order_number):
     """
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
+        # OrderedFood.objects.filter(...) returns a QuerySet of OrderedFood objects that match the given conditions.
+        # order=order specifies that we only want the OrderedFood objects that are associated with the given order order.
+        # fooditem__vendor=get_vendor(request) specifies that we only want the OrderedFood objects whose fooditem is associated with the given vendor. 
+        # This is achieved by double underlining (__), which allows us to navigate through the relationships between models. In this case, we access the vendor associated with the fooditem.
         ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
 
         context = {
@@ -444,3 +449,48 @@ def my_orders(request):
         'orders': orders,
     }
     return render(request, 'vendor/my_orders.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(check_role_vendor)
+def update_order_status(request, order_id):
+    """
+    Update the status of an order.
+
+    This view allows a vendor to update the status of an order they are associated with. 
+    The status update is performed via an AJAX POST request containing the new status 
+    in the request body. The request must be made by an authenticated vendor.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        order_id (int): The ID of the order to update.
+
+    Returns:
+        JsonResponse: A JSON response indicating success or failure.
+            - If successful: {'status': 'success'}
+            - If invalid status: {'status': 'failed', 'message': 'Invalid status'}
+            - If an error occurs: {'status': 'failed', 'message': str(exception)}
+            - If the request method is not POST: {'status': 'failed', 'message': 'Invalid request method'}
+
+    Decorators:
+        login_required: Ensures that the user is logged in.
+        user_passes_test: Ensures that the user is a vendor (checked by `check_role_vendor`).
+
+    Raises:
+        Http404: If the order does not exist or the vendor does not have permission to update the order.
+    """
+
+    if request.method == 'POST':
+        try:
+            order = get_object_or_404(Order, id=order_id, vendors__user=request.user)
+            data = json.loads(request.body)
+            new_status = data.get('status')
+            if new_status in dict(Order.STATUS):
+                order.status = new_status
+                order.save()
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'status': 'failed', 'message': 'Invalid status'})
+        except Exception as e:
+            return JsonResponse({'status': 'failed', 'message': str(e)})
+    return JsonResponse({'status': 'failed', 'message': 'Invalid request method'})

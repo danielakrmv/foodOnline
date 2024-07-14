@@ -53,7 +53,7 @@ def vendor_detail(request, vendor_slug):
             'fooditems',
             queryset = FoodItem.objects.filter(is_available=True)
         )
-    )
+    ).order_by('created_at')
 
     opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
     

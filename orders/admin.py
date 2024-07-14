@@ -3,8 +3,8 @@ from .models import Payment, Order, OrderedFood
 
 class OrderedFoodInline(admin.TabularInline):
     model = OrderedFood
-    readonly_fields = ('order', 'payment', 'user', 'fooditem', 'quantity', 'price', 'amount')
-    extra = 0
+    readonly_fields = ('order', 'payment', 'user', 'fooditem', 'quantity', 'price', 'amount') # These fields will be displayed as read-only in the admin interface. It ensures that once an order is placed, these details cannot be modified directly from the admin interface.
+    extra = 0 # This specifies that no extra empty forms should be displayed by default.
 
 
 class OrderAdmin(admin.ModelAdmin):
